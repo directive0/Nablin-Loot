@@ -1,7 +1,6 @@
 # Nablin-Loot
-A simple game made in pygame. You are a Nablin and your goal is to loot a sleeping adventurer.
-
-Code by directive0, Art by diz
+Guidestar Software Projects Divison 2017
+Pixels by diz, logic by directive0
 
 You know that game GoldenAxe? Okay, so you know that part in it when your dude is asleep and these elves come and you gotta like kick them to get little satchels or potions or something? So this game is like that but its also not that because its from the perspective of the elf. Only we call them "nablins" because they nab your stuff, yo.
 
