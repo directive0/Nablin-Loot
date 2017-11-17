@@ -15,6 +15,4 @@ Added new features. Includes new handling for collisions and items.
 
 KEYS:
 
-Arrow Keys to move.
-Space bar to loot.
-Left Shift to use item.
+Arrow Keys to move. Space bar to loot. Left Shift to use item. Q to quit.
