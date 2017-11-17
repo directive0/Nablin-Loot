@@ -1,5 +1,5 @@
 # Nablin-Loot
-Guidestar Software Projects Divison 2017
+Guidestar Software 2017
 
 Pixels by diz, logic by directive0
 
@@ -9,3 +9,12 @@ So basically you are the Nablin (I call him nabbles) and the goal is to hide in 
 
 Enjoy!
 
+Update: Nov 16 2017
+
+Added new features. Includes new handling for collisions and items.
+
+KEYS:
+
+Arrow Keys to move.
+Space bar to loot.
+Left Shift to use item.
