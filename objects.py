@@ -1,4 +1,5 @@
 import pygame
+import math
 from entities import *
 
 # the following are my color standards
@@ -10,19 +11,22 @@ white = (255,255,255)
 air = (255,0,255)
 
 mainfont = "assets/boot.ttf"
-background = pygame.image.load('assets/background.bmp')
-splash = pygame.image.load('assets/splash.bmp')
+background = pygame.image.load('assets/background.png')
+splash = pygame.image.load('assets/splash.png')
 heart = pygame.image.load('assets/heart.png')
 halfheart = pygame.image.load('assets/halfheart.png')
 itemframe = pygame.image.load('assets/itemframe.png')
 itembubble = pygame.image.load('assets/bubble.png')
+flasksmall = pygame.image.load('assets/flasksmall.png')
+pipsmall = pygame.image.load('assets/pipsmall.png')
+pursesmall = pygame.image.load('assets/pursesmall.png')
 
 # the following class is used to display images
 class Image(object):
     def __init__(self):
         self.x = 258
         self.y = 66
-        self.Img = pygame.image.load('assets/background.bmp')
+        self.Img = pygame.image.load('assets/background.png')
     
     def update(self, image, nx, ny):
         self.x = nx
@@ -80,43 +84,51 @@ class Label(object):
 # I have made it so key combos are returned for the up/left and down/right style inputs
 def getkeys():
     
+    direction = []
     key = pygame.key.get_pressed()
+
     
-    direction = "stationary"
     
     if key[pygame.K_SPACE]:
-        direction = "loot"
+        direction.append("loot")
+
+    if key[pygame.K_HOME]:
+        direction.append("loot")
 
     if key[pygame.K_LSHIFT]:
-        direction = "use"
+        direction.append("use")
+
+    if key[pygame.K_PAGEDOWN]:
+        direction.append("use")
 
 
     if key[pygame.K_LEFT]:
-        direction = "left"
+        direction.append("left")
     if key[pygame.K_RIGHT]:
-        direction = "right"
+        direction.append("right")
     if key[pygame.K_UP]:
-        direction = "up"
+        direction.append("up")
     if key[pygame.K_DOWN]:
-        direction ="down"
+        direction.append("down")
     
-    if key[pygame.K_LEFT]:
-        if key[pygame.K_UP]:
-            direction = "upleft"
+    #if key[pygame.K_LEFT]:
+        #if key[pygame.K_UP]:
+            #direction = "upleft"
     
-    if key[pygame.K_LEFT]:
-        if key[pygame.K_DOWN]:
-            direction = "downleft"
+    #if key[pygame.K_LEFT]:
+        #if key[pygame.K_DOWN]:
+            #direction = "downleft"
 
-    if key[pygame.K_RIGHT]:
-        if key[pygame.K_UP]:
-            direction = "upright"
+    #if key[pygame.K_RIGHT]:
+        #if key[pygame.K_UP]:
+            #direction = "upright"
 
-    if key[pygame.K_RIGHT]:
-        if key[pygame.K_DOWN]:
-            direction = "downright"
+    #if key[pygame.K_RIGHT]:
+        #if key[pygame.K_DOWN]:
+            #direction = "downright"
 
     return direction
+
 
 # this class is the stealth meter. 
 # Draw increases the bar, update decreases.
@@ -244,6 +256,60 @@ class damage(object):
             # decrement the hearts variable so each time through the loop a heart is drawn representing the remaining value.
             fullhearts -= 1
             
+            
+
+class effect(pygame.sprite.Sprite):
+    
+    def __init__(self, x, y, image, facing):
+        
+        # Call the parent class (Sprite) constructor
+        super(effect,self).__init__()
+        self.decide = image
+        self.facing = facing
+        print(self.decide)
+        if self.decide == 0:
+            self.image = pursesmall
+        if self.decide == 1:
+            self.image = pipsmall
+        if self.decide == 2:
+            self.image = flasksmall
+            
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect.x = x
+        self.rect.y = y
+        self.tick = float(0)
+        self.busy = True
+    
+    def sinwave(self,tick):
+        y = math.sin(math.radians(self.tick))
+
+        test = y * 40
+
+        return test
+    
+    def active(self):
+        return self.busy
+  
+    def update(self,x,y):
+
+        length = 100
+        distscaler = float(self.tick) / 188
+
+        if self.facing == "right":
+            distance = x + (length * distscaler)
+        else:
+            distance = x - (length * distscaler)
+        adjust = y -(self.sinwave(self.tick))
+        
+        self.rect.center = distance,adjust
+        
+        if self.tick < 188:
+            self.tick += 20
+        
+        if self.tick >= 188:
+            self.busy = False
+
 # the following class handles the location of items.
 class itemFrame(object):
     def __init__(self, location, surface, score):
@@ -258,27 +324,41 @@ class itemFrame(object):
         self.timer = 0
         self.holdloot = []
         self.score = score
+        self.state = 0
         
-    def use(self):
-        if len(self.holdloot) > 0:
-            toploot = self.holdloot[-1]
+    def use(self,hero):
+
+        if len(self.holdloot) > 0 and self.state == 0:
+
+            toploot = self.holdloot.pop()
             
+            usedimage = toploot.use()
+            herorect,herofacing = hero.getrect()
+            self.startposx,self.startposy = herorect.center
+            self.state = 1
+            self.sprite = effect(self.startposx,self.startposy,usedimage,herofacing)
+            self.usedsprite = pygame.sprite.LayeredUpdates()
+            self.usedsprite.add(self.sprite)
+            self.throw()
             
+    def throw(self):
+
+        self.sprite.update(self.startposx,self.startposy)
+        
+        if self.sprite.active() == False:
+
+            self.state = 0
         
     def roll(self):
         self.timenow = pygame.time.get_ticks()
         elapsed = self.timenow - self.lasttime
-        print(elapsed)
         if elapsed < self.interval:
-            
-            print("Drawing bubble")
             self.surface.blit(itembubble, (self.lootx+10,self.looty-142))
-        
             self.surface.blit(self.lootimage, (self.lootx+10,self.looty-142))
-            print(self.lootx,self.looty)
+            self.holdloot.append(self.newloot)
         else:
             self.rolling = False
-            self.holdloot.append(self.newloot)
+            
         
         
     def new(self,location):
@@ -291,9 +371,8 @@ class itemFrame(object):
         self.score.add(self.lootvalue)
         
     def additem(self, item):
-        
         self.items.append(item)
-        print(self.items)
+
         
     
     def draw(self):
@@ -306,6 +385,11 @@ class itemFrame(object):
             toploot = self.holdloot[-1]
             topimage = toploot.getimage()
             self.surface.blit(topimage, (self.x+26,self.y+26))
+            
+        if self.state == 1:
+            self.throw()
+            self.usedsprite.draw(self.surface)
+            
 # The following class determines the kind of item that will be picked up by the player. The class is instantiated when the player loots their target. 
 # Once instatiated a random number is drawn, if the number is within a range then they have successfully looted an item. 
 # Another random number is then drawn to determine what item they have looted. A mechanism needs to be created to direct how the item will effect gameplay.
@@ -328,7 +412,7 @@ class Loot(object):
         self.decide()
 
     def use(self):
-        pass
+        return self.determine
         
     def getinfo(self):
         return self.info
@@ -339,22 +423,25 @@ class Loot(object):
     
     def getimage(self):
         string = str(self.info[4])
-        print(self.info)
+
         image = pygame.image.load(string)
         return image
         
     def decide(self):
         decideint = random.randint(0,70)
-        
+        self.decideint = decideint
         if decideint >= 0 and decideint <= 50:
+            self.determine = 0
             self.info = loots[0]
             self.state = 1
             
         if decideint >= 51 and decideint <= 60:
+            self.determine = 1
             self.info = loots[1]
             self.state = 1
             
         if decideint >= 61 and decideint <= 70:
+            self.determine = 2
             self.info = loots[2]
             self.state = 1
         

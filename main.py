@@ -5,7 +5,8 @@ import pygame
 from entities import *
 from objects import *
 
-pandora = True
+pandora = False
+
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.mixer.init()
@@ -26,7 +27,7 @@ else:
 	surface = pygame.display.set_mode(screenSize)
 
 vignette = pygame.image.load("assets/overlay.png")
-sidebarsrc = pygame.image.load("assets/Sidebar.png")
+
 
 status = "start"
 gameover = False
@@ -80,7 +81,7 @@ class world(object):
         self.splashimg = Image()
         self.splashimg.update(splash,0,0)
         self.backimg = Image()
-        self.backimg.update(background,80,0)
+        self.backimg.update(background,0,0)
         self.all_sprites_list = pygame.sprite.LayeredUpdates()
         self.all_sprites_list.add(self.pyra,self.barbarian,self.nablin,self.harold,self.walter,self.roy)
         self.bushes = [self.harold,self.walter,self.roy]
@@ -137,7 +138,7 @@ while(status != "quit"):
         splashimg = Image()
         splashimg.update(splash,0,0)
         backimg = Image()
-        backimg.update(background,80,0)
+        backimg.update(background,0,0)
         all_sprites_list = pygame.sprite.LayeredUpdates()
         all_sprites_list.add(pyra,barbarian,nablin,harold,walter,roy)
         bushes = [harold,walter,roy]
@@ -148,7 +149,7 @@ while(status != "quit"):
         titletext.update("Press Space to Begin!",30,200,120,mainfont,white)
         titletext.draw(surface)
         overlay = Image()
-        overlay.update(vignette,80,0)
+        overlay.update(vignette,0,0)
         
         # The Following objects load and configure the music.
         pygame.mixer.music.load('assets/lvl1.mp3')
@@ -170,14 +171,7 @@ while(status != "quit"):
     
     # the next conditional runs when the game is underway
     if status == "game":
-            
-        # call on the hero sprite to update.
-        nablin.update()
-        
-        # call on the barbarian sprite to update
-        barbarian.update(surface,nablin,stealth)
-        
-        
+
         # this object checks to see if the barbarian attacked the player and landed a hit.
         caught = barbarian.gotcha()
         
@@ -199,6 +193,11 @@ while(status != "quit"):
         # update the campfire
         pyra.update(surface)
 
+        # call on the hero sprite to update.
+        nablin.update()
+        
+        # call on the barbarian sprite to update
+        barbarian.update(surface,nablin,stealth)
 
         # I need to go through the list of all the sprites and order them based on their Y pos so that the lower the y pos the lower the layer, the higher the y pos the higher the layer.
         sortsprites(all_sprites_list)

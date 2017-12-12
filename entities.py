@@ -16,9 +16,13 @@ nablin1 = pygame.image.load("assets/f1.png")
 nablin2 = pygame.image.load("assets/f2.png")
 nablin3 = pygame.image.load("assets/f3.png")
 nablin4 = pygame.image.load("assets/f4.png")
+nablinhit = pygame.image.load("assets/nablinhit.png")
+nablindeath = pygame.image.load("assets/nablindeath.png")
 z0 = pygame.image.load("assets/z1.png")
 z1 = pygame.image.load("assets/z2.png")
 z2 = pygame.image.load("assets/z3.png")
+
+
 
 # the following images are for the barbarian
 barbattack = pygame.image.load("assets/barbattack.png")
@@ -191,6 +195,20 @@ class Fire(pygame.sprite.Sprite):
         self.ember4.draw(surface)
         self.ember5.draw(surface)
 
+class effect(pygame.sprite.Sprite):
+    
+    def __init__(self, x, y, image):
+        
+        # Call the parent class (Sprite) constructor
+        super(effects,self).__init__()
+        self.image = image
+        self.x = x
+        self.y = y
+            
+    def update(self,x,y):
+        pass
+        
+
 #the following class is the main Hero. It responds to key presses, initiates an "attack" and can hide in bushes.
 class HeroSprite(pygame.sprite.Sprite):
     
@@ -213,7 +231,7 @@ class HeroSprite(pygame.sprite.Sprite):
         self.knock = False
         self.knocktick = 0
         self.knockdir = 0
-        self.knockjump = 40
+        self.knockjump = 30
         
         self.facing = "right"
         # Fetch the rectangle object that has the dimensions of the image
@@ -246,8 +264,11 @@ class HeroSprite(pygame.sprite.Sprite):
     # this function governs looting, it is a work in progress
     def loot(self):
         col = pygame.sprite.collide_mask(self.target, self)
-        print("looted!", col)
+
         return col
+    
+    def use(self):
+        pass
     
     # this function controls hit points. It is simply a decremental counter right now.
     def hit(self, amount,attacker):
@@ -270,6 +291,11 @@ class HeroSprite(pygame.sprite.Sprite):
             
     # this function will allow the player to receive a knockback when hit by the enemy. It will recieve the direction it was hit from and the power of the knockback.
     def knockback(self):
+        
+        self.image = nablinhit
+        if self.facing == "left":
+            self.image = pygame.transform.flip(self.image,True,False)
+        
         if self.knocktick >= 0:
             if self.knockdir == 0:
                 self.rect.x -= self.knockjump
@@ -297,6 +323,14 @@ class HeroSprite(pygame.sprite.Sprite):
         elif currentx <= 0:
             self.rect.midbottom = 0, currenty
             
+    def shadowdraw(self):
+        if self.facing == "left":
+            self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
+        else:
+            self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
+            
+        self.shadow.draw(self.surface)
+            
     # this object controls player footfall sounds.
     def footfall(self):
 
@@ -317,51 +351,30 @@ class HeroSprite(pygame.sprite.Sprite):
             
     # this function governs movement. It receives a command from the main loop and interprets it as movement.     
     def move(self,direction,surface):
-        
-        if direction == "up":
-            self.footfall()
-            self.rect.y -= self.speed
-            self.animtick += 1
-        elif direction == "down":
-            self.footfall()
-            self.rect.y += self.speed
-            self.animtick += 1
-        elif direction == "right":
-            self.footfall()
-            self.facing = "right"
-            self.rect.x += self.speed
-            self.animtick += 1
-        elif direction == "left":
-            self.footfall()
-            self.facing = "left"
-            self.rect.x -= self.speed
-            self.animtick += 1
-        elif direction == "upleft":
-            self.footfall()
-            self.facing = "left"
-            self.rect.x -= self.speed
-            self.rect.y -= self.speed
-            self.animtick += 1
-        elif direction == "downleft":
-            self.footfall()
-            self.facing = "left"
-            self.rect.x -= self.speed
-            self.rect.y += self.speed
-            self.animtick += 1
-        elif direction == "upright":
-            self.footfall()
-            self.facing = "right"
-            self.rect.y -=self.speed
-            self.rect.x += self.speed
-            self.animtick += 1
-        elif direction == "downright":
-            self.footfall()
-            self.facing = "right"
-            self.rect.y += self.speed
-            self.rect.x += self.speed   
-            self.animtick += 1
 
-        if direction == "loot":
+        if "up" in direction:
+            self.footfall()
+            self.rect.y -= self.speed
+            self.animtick += 1
+            
+        if "down" in direction:
+            self.footfall()
+            self.rect.y += self.speed
+            self.animtick += 1
+        
+        if "right" in direction:
+            self.footfall()
+            self.facing = "right"
+            self.rect.x += self.speed
+            self.animtick += 1
+            
+        if "left" in direction:
+            self.footfall()
+            self.facing = "left"
+            self.rect.x -= self.speed
+            self.animtick += 1
+            
+        if "loot" in direction:
             self.image = nabloot0
             self.mask = pygame.mask.from_surface(self.image)
     
@@ -400,23 +413,13 @@ class HeroSprite(pygame.sprite.Sprite):
 
             if self.facing == "left":
                 self.image = pygame.transform.flip(self.image,True,False)
-                self.mask = pygame.mask.from_surface(self.image)
-
-        self.checklimits()
-            
-        if self.animtick >= 8:
+                self.mask = pygame.mask.from_surface(self.image)\
+        
+        if self.animtick > 8:
             self.animtick = 0
 
-        if self.facing == "left":
-            self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
-        else:
-            self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
-            
-        self.shadow.draw(surface)
 
-
-
-        if direction == "stationary":
+        if not direction:
             self.animtick = 0
             
             if self.facing == "right":
@@ -432,6 +435,9 @@ class HeroSprite(pygame.sprite.Sprite):
             pass
 
     # this function returns the players location with reference to the BOTTOM MIDDLE of the mask bounding box 
+    def getrect(self):
+        return self.rect,self.facing
+    
     def getpos(self):
         return self.rect.midbottom
     
@@ -444,7 +450,10 @@ class HeroSprite(pygame.sprite.Sprite):
             direction = getkeys()
         
             #if the player has hit space
-            if direction == "loot":
+            if "use" in direction:
+                self.worldloot.use(self)
+            
+            if "loot" in direction:
                 
                 self.thisloot = self.getpos()
                 #check for collision with barbarian
@@ -459,6 +468,10 @@ class HeroSprite(pygame.sprite.Sprite):
                         self.worldloot.new(self.getpos())
                         #make a new loot object        
             self.move(direction,self.surface)  
+        
+        self.checklimits()
+            
+        self.shadowdraw()
 
 #the following class is the main barbarian. It should stay sleeping until the stealth meter runs out and then the barbarian wakes up and attacks.
 class BarbarianSprite(pygame.sprite.Sprite):
@@ -536,7 +549,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         
         self.image = pygame.image.load("assets/barbarianwake.png")
         self.animtick += 1
-        print(self.animtick)
+
         if self.animtick >= 25:
             self.state = "aggro"
             self.image = pygame.image.load("assets/barbarianstep1.png")
@@ -560,8 +573,6 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.shadow.update(self.shadowimg,self.rect.x+25,self.rect.y+ 110)
             
         self.shadow.draw(self.surface)
-        
-
         
 
 
@@ -628,9 +639,9 @@ class BarbarianSprite(pygame.sprite.Sprite):
         if collision:
             self.state = "gotcha"
             
-            
+
     def asleep(self):
-        self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y+ 25)
+        self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y + 25)
         self.shadow.draw(self.surface)
         
         if self.animtick == 0:
