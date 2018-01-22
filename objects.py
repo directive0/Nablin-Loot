@@ -21,6 +21,7 @@ flasksmall = pygame.image.load('assets/flasksmall.png')
 pipsmall = pygame.image.load('assets/pipsmall.png')
 pursesmall = pygame.image.load('assets/pursesmall.png')
 
+
 # the following class is used to display images
 class Image(object):
     def __init__(self):

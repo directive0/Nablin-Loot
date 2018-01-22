@@ -10,9 +10,9 @@ So basically you are the Nablin (I call him nabbles) and the goal is to hide in 
 
 Enjoy!
 
-Update: Nov 16 2017
+## Update: Dec 12 2017
 
-Added new features. Includes new handling for collisions and items.
+So many new features. Item throwing, damage, knockback. So much more to do but its finally feeling like a game!
 
 ## Keys
 

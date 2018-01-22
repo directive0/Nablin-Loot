@@ -24,6 +24,8 @@ z2 = pygame.image.load("assets/z3.png")
 
 
 
+pygame.display.set_icon(nablin3)
+
 # the following images are for the barbarian
 barbattack = pygame.image.load("assets/barbattack.png")
 barbsleep = pygame.image.load("assets/barbariansleeping.png")
@@ -34,6 +36,7 @@ barbshadow = pygame.image.load('assets/barbshadow.png')
 #the following images are for shadows
 nabshadow = pygame.image.load('assets/nabshadow.png')
 
+# the following function returns the angle to a desired destination when given an origin.
 def get_angle(origin, destination):
     """Returns angle in radians from origin to destination.
     This is the angle that you would get if the points were
@@ -44,6 +47,7 @@ def get_angle(origin, destination):
     y_dist = destination[1] - origin[1]
     return atan2(-y_dist, x_dist) % (2 * pi)
 
+# the following returns a coordinate of a desired point at a certain angle and distance with reference to an origin
 def project(pos, angle, distance):
     """Returns tuple of pos projected distance at angle
     adjusted for pygame's y-axis.
@@ -114,7 +118,7 @@ class ember(object):
         
         pygame.draw.rect(surface, self.color, self.rect)  
         
-# This class handles the location, animation and eventually collisions for the fire.    
+# This class handles the location, animation and collisions for the fire.    
 class Fire(pygame.sprite.Sprite):
 
     def __init__(self,x,y,hero,barbarian):
@@ -124,19 +128,24 @@ class Fire(pygame.sprite.Sprite):
         
         # Load the image
         self.image = fire1
-        # Set our transparent color
-
+    
+        # the following is a timer interval used to direct the speed of animation
         self.timer = pygame.time.Clock()
+        
+        # the followin creates a mask from the supplied image (for collisions)
         self.mask = pygame.mask.from_surface(self.image)
 
+        # we make the hero and enemy object accessible in the class so we can find their position when we need to.
         self.nablin = hero
         self.barbarian = barbarian
+        
         # Fetch the rectangle object that has the dimensions of the image
         # image.
         # Update the position of this object by setting the values
         # of rect.x and rect.y
         self.rect = self.image.get_rect()
         
+        # we set the coordinates for the fire, as given to us when the class was instantiated.
         self.starty = y   
         self.startx = x
         
