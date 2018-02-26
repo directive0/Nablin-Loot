@@ -1,5 +1,6 @@
 import pygame
 import math
+import time
 from entities import *
 
 # the following are my color standards
@@ -20,6 +21,35 @@ itembubble = pygame.image.load('assets/bubble.png')
 flasksmall = pygame.image.load('assets/flasksmall.png')
 pipsmall = pygame.image.load('assets/pipsmall.png')
 pursesmall = pygame.image.load('assets/pursesmall.png')
+
+glasses = []
+for i in range(15):
+    imagename = "glass" + str(int(i)) + ".png"
+    fullpath = "assets/" + imagename
+    image = pygame.image.load(fullpath)
+    glasses.append(image)
+
+# The following class is to handle interval timers.
+class timer(object):
+
+    # Constructor code logs the time it was instantiated.    
+    def __init__(self):
+        self.timeInit = time.time()
+
+    # The following funtion returns the last logged value.        
+    def timestart(self):
+        return self.timeInit
+        
+    # the following function updates the time log with the current time.
+    def logtime(self):
+        self.lastTime = time.time()
+
+    # the following function returns the interval that has elapsed since the last log.        
+    def timelapsed(self):
+        self.timeLapse = time.time() - self.lastTime
+        #print(self.timeLapse)
+        return self.timeLapse
+
 
 
 # the following class is used to display images
@@ -81,8 +111,8 @@ class Label(object):
 
 # the following function reports the current state of the keyboard event list. 
 # If a player pressed a key it ends up in the event list which the program will need in order to respond.
-# it returns a simple string indicating what state the keys are at.
-# I have made it so key combos are returned for the up/left and down/right style inputs
+# it returns a list of strings indicating what state the keys are at.
+
 def getkeys():
     
     direction = []
@@ -105,28 +135,15 @@ def getkeys():
 
     if key[pygame.K_LEFT]:
         direction.append("left")
+        
     if key[pygame.K_RIGHT]:
         direction.append("right")
+        
     if key[pygame.K_UP]:
         direction.append("up")
+        
     if key[pygame.K_DOWN]:
         direction.append("down")
-    
-    #if key[pygame.K_LEFT]:
-        #if key[pygame.K_UP]:
-            #direction = "upleft"
-    
-    #if key[pygame.K_LEFT]:
-        #if key[pygame.K_DOWN]:
-            #direction = "downleft"
-
-    #if key[pygame.K_RIGHT]:
-        #if key[pygame.K_UP]:
-            #direction = "upright"
-
-    #if key[pygame.K_RIGHT]:
-        #if key[pygame.K_DOWN]:
-            #direction = "downright"
 
     return direction
 
@@ -177,9 +194,32 @@ class metertick(object):
             stealthnum = self.draw(surface)
         else:
             stealthnum = self.tick(surface)
+
+class leveltimer(object):
+    def __init__(self, surface, time = 60):
+        self.time = time
+        
+        # 15 different increments of the timer.
+        self.increments = self.time / 15
+        self.timerobj = timer()
+        self.timerobj.logtime()
+        self.surface = surface
+        
+    def draw(self):
+        # checks the time, draws the hourglass. If time is left return true, if time has elapsed then return false.
+        self.timelapsed = self.timerobj.timelapsed()
+        
+        if self.timelapsed > self.time:
+            return False
+        
+        self.timedivision = self.timelapsed / self.increments
+        
+        imagetoshow = int(self.timedivision)
+        self.surface.blit(glasses[imagetoshow], (0,0))
         
 #This class handles the score integer and displays it as a text object
 class score(object):
+    
     def __init__(self,size,x,y):
         self.scoreval = 0
         self.x = x
@@ -327,6 +367,7 @@ class itemFrame(object):
         self.score = score
         self.state = 0
         
+        
     def use(self,hero):
 
         if len(self.holdloot) > 0 and self.state == 0:
@@ -370,6 +411,8 @@ class itemFrame(object):
         self.lootimage = self.newloot.getimage()
         self.lootvalue = self.newloot.get(2)
         self.score.add(self.lootvalue)
+        self.getsound = pygame.mixer.Sound("assets/get.ogg")
+        self.getsound.play()
         
     def additem(self, item):
         self.items.append(item)

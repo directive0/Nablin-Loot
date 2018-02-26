@@ -14,8 +14,6 @@ nabloot0 = pygame.image.load("assets/loot.png")
 nablin0 = pygame.image.load("assets/nablin.png")
 nablin1 = pygame.image.load("assets/f1.png")
 nablin2 = pygame.image.load("assets/f2.png")
-nablin3 = pygame.image.load("assets/f3.png")
-nablin4 = pygame.image.load("assets/f4.png")
 nablinhit = pygame.image.load("assets/nablinhit.png")
 nablindeath = pygame.image.load("assets/nablindeath.png")
 z0 = pygame.image.load("assets/z1.png")
@@ -24,7 +22,7 @@ z2 = pygame.image.load("assets/z3.png")
 
 
 
-pygame.display.set_icon(nablin3)
+pygame.display.set_icon(nablin2)
 
 # the following images are for the barbarian
 barbattack = pygame.image.load("assets/barbattack.png")
@@ -401,7 +399,7 @@ class HeroSprite(pygame.sprite.Sprite):
                 self.mask = pygame.mask.from_surface(self.image)
 
         if self.animtick == 4:
-            self.image = nablin2
+            self.image = nablin0
             self.mask = pygame.mask.from_surface(self.image)
 
             if self.facing == "left":
@@ -409,7 +407,7 @@ class HeroSprite(pygame.sprite.Sprite):
                 self.mask = pygame.mask.from_surface(self.image)
 
         if self.animtick == 6:
-            self.image = nablin3
+            self.image = nablin2
             self.mask = pygame.mask.from_surface(self.image)
 
             if self.facing == "left":
@@ -417,7 +415,7 @@ class HeroSprite(pygame.sprite.Sprite):
                 self.mask = pygame.mask.from_surface(self.image)
 
         if self.animtick == 8:
-            self.image = nablin4
+            self.image = nablin0
             self.mask = pygame.mask.from_surface(self.image)
 
             if self.facing == "left":
