@@ -446,6 +446,7 @@ class HeroSprite(pygame.sprite.Sprite):
         return self.rect,self.facing
     
     def getpos(self):
+
         return self.rect.midbottom
     
     def update(self):
@@ -523,7 +524,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         
             retx,rety = self.rect.midbottom
         
-            rety -= 30
+            rety -= 35
         
             return retx,rety
         else:

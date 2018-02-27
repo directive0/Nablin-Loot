@@ -23,6 +23,7 @@ pipsmall = pygame.image.load('assets/pipsmall.png')
 pursesmall = pygame.image.load('assets/pursesmall.png')
 
 glasses = []
+
 for i in range(15):
     imagename = "glass" + str(int(i)) + ".png"
     fullpath = "assets/" + imagename
@@ -148,6 +149,51 @@ def getkeys():
     return direction
 
 
+class stealthbox(object):
+    def __init__(self,x,y):
+        self.meter = Box()
+        self.metervalue = 122
+        self.metermax = 122
+        self.x = x
+        self.y = y
+    
+    def effected(self,amount):
+        self.amount = amount
+        self.metervalue = self.metervalue + self.amount
+    
+    def tick(self,surface):
+        self.meter.update(self.x,self.y, (self.metervalue,10), white)
+        self.meter.draw(surface)
+        
+        return self.metervalue 
+
+    def draw(self,surface):
+        self.metervalue += .5
+        if self.metervalue  > self.metermax:
+            self.metervalue = self.metermax
+        self.meter.update(self.x, self.y, (self.metervalue,10), white)
+        self.meter.draw(surface)
+        return self.metervalue
+        
+
+    def update(self, surface, bush, hero):
+        
+        collidersum = 0
+        
+        for i in range(len(bush)):
+            rectollide = pygame.sprite.collide_rect(bush[i],hero)
+            collision = pygame.sprite.collide_mask(bush[i], hero)
+            
+            if rectollide:
+                if collision:
+                    collidersum +=1
+            
+        if collidersum > 0:
+            stealthnum = self.draw(surface)
+        else:
+            stealthnum = self.tick(surface)
+
+        
 # this class is the stealth meter. 
 # Draw increases the bar, update decreases.
 class metertick(object):
@@ -215,7 +261,7 @@ class leveltimer(object):
         self.timedivision = self.timelapsed / self.increments
         
         imagetoshow = int(self.timedivision)
-        self.surface.blit(glasses[imagetoshow], (0,0))
+        self.surface.blit(glasses[imagetoshow], (700,0))
         
 #This class handles the score integer and displays it as a text object
 class score(object):

@@ -1,5 +1,5 @@
-#looter alpha 10
-# C.Barrett - 2017
+# Nablin Loot v0.13
+# C.Barrett - 2018
 
 # Pygame controls the graphical elements of the scene
 import pygame
@@ -9,7 +9,7 @@ from entities import *
 from objects import *
 
 # flag to control whether or not game is being played on an OpenPandora handheld
-pandora = False
+pandora = True
 
 # Pygame configuration calls to activate the audio buss, the display and the font driver.
 pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -65,7 +65,8 @@ def sortsprites(sprites):
 # need to add:
 #   -Hourglass
 #   -pseudo random events
-#   -
+#   - stealth is footfalls not a countdown timer
+#   - items have effects and buffs
 
 class world(object):
     def __init__(self, nobush = 3, difficulty = 0):
@@ -111,9 +112,10 @@ class world(object):
         self.backimg = Image()
         self.backimg.update(background,0,0)
         self.all_sprites_list = pygame.sprite.LayeredUpdates()
-        self.all_sprites_list.add(self.pyra,self.barbarian,self.nablin,self.harold,self.walter,self.roy)
+
         self.bushes = [self.harold,self.walter,self.roy]
-        
+
+        self.all_sprites_list.add(self.pyra,self.barbarian,self.nablin,self.bushes)        
         
         self.splashimg.draw(surface)
         self.titletext = Label()
@@ -147,6 +149,7 @@ class world(object):
             pass
     
     # The following function draws a frame of the game itself.
+    
     def game(self):
         
         self.status = "game"
@@ -207,15 +210,15 @@ class world(object):
 # at the end of each night your loot is appraised
 # end of game is high score ranking
 
- 
+gameplay = world()
 while(status != "quit"):
-
+    #gameplay = world()
     # the following conditional sets up the scene.
     if status == "start":
-        gameplay = world()
+        #gameplay = world()
         # we create a timer object to control the scene.
         clock = pygame.time.Clock()
-        
+
         # # we put the event list into an object we can pass to our next decision
         key = pygame.key.get_pressed()
     
