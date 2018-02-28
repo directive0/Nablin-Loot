@@ -239,8 +239,11 @@ class HeroSprite(pygame.sprite.Sprite):
         self.knocktick = 0
         self.knockdir = 0
         self.knockjump = 30
-        
+    
+    
+        #the following variables hold the player status
         self.facing = "right"
+        self.moving = False
         # Fetch the rectangle object that has the dimensions of the image
         # image.
         # Update the position of this object by setting the values
@@ -355,7 +358,11 @@ class HeroSprite(pygame.sprite.Sprite):
     
         if self.footy >= 4:
             self.footy = 0
-            
+    
+    # this function is called by the stealth meter and returns the current status of the player
+    def walking(self):
+        return self.moving
+                
     # this function governs movement. It receives a command from the main loop and interprets it as movement.     
     def move(self,direction,surface):
 
@@ -363,23 +370,26 @@ class HeroSprite(pygame.sprite.Sprite):
             self.footfall()
             self.rect.y -= self.speed
             self.animtick += 1
-            
-        if "down" in direction:
+            self.moving = True
+        elif "down" in direction:
             self.footfall()
             self.rect.y += self.speed
             self.animtick += 1
-        
-        if "right" in direction:
+            self.moving = True
+        elif "right" in direction:
             self.footfall()
             self.facing = "right"
             self.rect.x += self.speed
             self.animtick += 1
-            
-        if "left" in direction:
+            self.moving = True
+        elif "left" in direction:
             self.footfall()
             self.facing = "left"
             self.rect.x -= self.speed
             self.animtick += 1
+            self.moving = True
+        else:
+            self.moving = False
             
         if "loot" in direction:
             self.image = nabloot0
@@ -420,11 +430,10 @@ class HeroSprite(pygame.sprite.Sprite):
 
             if self.facing == "left":
                 self.image = pygame.transform.flip(self.image,True,False)
-                self.mask = pygame.mask.from_surface(self.image)\
+                self.mask = pygame.mask.from_surface(self.image)
         
         if self.animtick > 8:
             self.animtick = 0
-
 
         if not direction:
             self.animtick = 0
@@ -432,7 +441,6 @@ class HeroSprite(pygame.sprite.Sprite):
             if self.facing == "right":
                 self.image = nablin0
                 self.mask = pygame.mask.from_surface(self.image)
-
 
             if self.facing == "left":
                 self.image = nablin0

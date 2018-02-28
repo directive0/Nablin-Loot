@@ -150,49 +150,44 @@ def getkeys():
 
 
 class stealthbox(object):
-    def __init__(self,x,y):
+    def __init__(self,x,y,surface):
         self.meter = Box()
         self.metervalue = 122
         self.metermax = 122
         self.x = x
         self.y = y
-    
+        self.surface = surface
+        self.effector = 1
+        
+    def get(self):
+        return self.metervalue
+            
     def effected(self,amount):
         self.amount = amount
         self.metervalue = self.metervalue + self.amount
     
-    def tick(self,surface):
+    def tick(self,enemy, bush, hero):
+        
+        herowalking = hero.walking()
+        
+        if herowalking:
+            self.metervalue -= self.effector
+        
         self.meter.update(self.x,self.y, (self.metervalue,10), white)
-        self.meter.draw(surface)
+        self.meter.draw(self.surface)
+        
+        
         
         return self.metervalue 
 
-    def draw(self,surface):
+    def draw(self):
         self.metervalue += .5
         if self.metervalue  > self.metermax:
             self.metervalue = self.metermax
         self.meter.update(self.x, self.y, (self.metervalue,10), white)
-        self.meter.draw(surface)
+        self.meter.draw(self.surface)
         return self.metervalue
         
-
-    def update(self, surface, bush, hero):
-        
-        collidersum = 0
-        
-        for i in range(len(bush)):
-            rectollide = pygame.sprite.collide_rect(bush[i],hero)
-            collision = pygame.sprite.collide_mask(bush[i], hero)
-            
-            if rectollide:
-                if collision:
-                    collidersum +=1
-            
-        if collidersum > 0:
-            stealthnum = self.draw(surface)
-        else:
-            stealthnum = self.tick(surface)
-
         
 # this class is the stealth meter. 
 # Draw increases the bar, update decreases.

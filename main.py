@@ -97,7 +97,7 @@ class world(object):
         # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
         # # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
         self.health = damage((140,4),self.surface)
-        self.stealth = metertick(4,130)
+        self.stealth = stealthbox(4,130,self.surface)
         self.scoreobj = score(20,140,40)
         self.items = itemFrame((4,4),self.surface,self.scoreobj)
         
@@ -156,10 +156,9 @@ class world(object):
         # fill the screen to erase the previous frame
         self.surface.fill(black)
         
-        # Draw the background
-
-        
+        # Draw the background        
         self.backimg.draw(self.surface)
+
         # update the campfire
         self.pyra.update(self.surface)
 
@@ -182,7 +181,7 @@ class world(object):
         
         # draw our UI elements.
         self.scoreobj.draw(self.surface)
-        self.stealth.update(self.surface,self.bushes,self.nablin)
+        self.stealth.tick(self.barbarian,self.bushes,self.nablin)
         self.health.draw(self.nablin)
         self.items.draw()
         
