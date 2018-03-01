@@ -22,6 +22,7 @@ flasksmall = pygame.image.load('assets/flasksmall.png')
 pipsmall = pygame.image.load('assets/pipsmall.png')
 pursesmall = pygame.image.load('assets/pursesmall.png')
 
+
 glasses = []
 
 for i in range(15):
@@ -30,6 +31,15 @@ for i in range(15):
     image = pygame.image.load(fullpath)
     glasses.append(image)
 
+
+#the following function measures distance
+def getdist(targeta,targetb):
+    ax, ay = targeta.getpos()
+    bx, by = targetb.getpos()
+
+    dist = math.hypot(ax-bx,ay-by)
+    return dist
+    
 # The following class is to handle interval timers.
 class timer(object):
 
@@ -58,7 +68,7 @@ class Image(object):
     def __init__(self):
         self.x = 258
         self.y = 66
-        self.Img = pygame.image.load('assets/background.png')
+        self.Img = heart
     
     def update(self, image, nx, ny):
         self.x = nx
@@ -150,28 +160,45 @@ def getkeys():
 
 
 class stealthbox(object):
-    def __init__(self,x,y,surface):
+    def __init__(self,x,y,surface,enemy, bush, hero):
+        self.hero = hero
+        self.enemy = enemy
+        self.bush = bush
         self.meter = Box()
-        self.metervalue = 122
+        self.metervalue = 0
         self.metermax = 122
         self.x = x
         self.y = y
         self.surface = surface
-        self.effector = 1
+        self.effector = 3
+        self.cool = .1
+        self.coolfast = 5
         
     def get(self):
-        return self.metervalue
-            
+        if self.metervalue >= self.metermax:
+            return True
+        else:
+            return False
+                
     def effected(self,amount):
         self.amount = amount
         self.metervalue = self.metervalue + self.amount
     
-    def tick(self,enemy, bush, hero):
+    def tick(self):
+        dist = getdist(self.hero,self.enemy)
+        herowalking = self.hero.walking()
         
-        herowalking = hero.walking()
+        self.scaled  = self.effector - int(dist * .01)
         
         if herowalking:
-            self.metervalue -= self.effector
+            if self.metervalue < self.metermax:
+                self.metervalue += self.scaled
+        else:
+            if self.metervalue > self.x:
+                if self.check():
+                    self.metervalue -= self.coolfast
+                else:
+                    self.metervalue -= self.cool
         
         self.meter.update(self.x,self.y, (self.metervalue,10), white)
         self.meter.draw(self.surface)
@@ -187,9 +214,27 @@ class stealthbox(object):
         self.meter.update(self.x, self.y, (self.metervalue,10), white)
         self.meter.draw(self.surface)
         return self.metervalue
+
+    def check(self):
         
+        collidersum = 0
         
-# this class is the stealth meter. 
+        for i in range(len(self.bush)):
+            rectollide = pygame.sprite.collide_rect(self.bush[i],self.hero)
+            collision = pygame.sprite.collide_mask(self.bush[i], self.hero)
+            
+            if rectollide:
+                if collision:
+                    collidersum +=1
+            
+        if collidersum > 0:
+            self.hidden = True
+        else:
+            self.hidden = False
+        
+        return self.hidden
+        
+# this class is the (now deprecated) stealth meter. 
 # Draw increases the bar, update decreases.
 class metertick(object):
     def __init__(self,x,y):

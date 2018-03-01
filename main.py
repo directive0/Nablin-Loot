@@ -9,7 +9,7 @@ from entities import *
 from objects import *
 
 # flag to control whether or not game is being played on an OpenPandora handheld
-pandora = True
+pandora = False
 
 # Pygame configuration calls to activate the audio buss, the display and the font driver.
 pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -94,18 +94,16 @@ class world(object):
         self.clock = pygame.time.Clock()
         
         self.leveltime = leveltimer(self.surface)
-        # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
-        # # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
-        self.health = damage((140,4),self.surface)
-        self.stealth = stealthbox(4,130,self.surface)
         self.scoreobj = score(20,140,40)
         self.items = itemFrame((4,4),self.surface,self.scoreobj)
         
-        self.barbarian = BarbarianSprite()
-        self.nablin = HeroSprite(224,64,self.barbarian,self.scoreobj,self.surface, self.items)
-        self.harold = Bush(224,240)
-        self.walter = Bush(550,240)
-        self.roy = Bush(400,100)
+        self.shadows = []
+        
+        self.barbarian = BarbarianSprite(self.shadows)
+        self.nablin = HeroSprite(100,64,self.barbarian,self.scoreobj,self.surface, self.items,self.shadows)
+        self.harold = Bush(224,240,self.shadows)
+        self.walter = Bush(550,240,self.shadows)
+        self.roy = Bush(400,100,self.shadows)
         self.pyra = Fire(510, 350,self.nablin,self.barbarian)
         self.splashimg = Image()
         self.splashimg.update(splash,0,0)
@@ -113,7 +111,14 @@ class world(object):
         self.backimg.update(background,0,0)
         self.all_sprites_list = pygame.sprite.LayeredUpdates()
 
+
         self.bushes = [self.harold,self.walter,self.roy]
+        # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
+        # # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
+        self.health = damage((140,4),self.surface)
+        self.stealth = stealthbox(4,130,self.surface,self.barbarian,self.bushes,self.nablin)
+
+
 
         self.all_sprites_list.add(self.pyra,self.barbarian,self.nablin,self.bushes)        
         
@@ -158,7 +163,11 @@ class world(object):
         
         # Draw the background        
         self.backimg.draw(self.surface)
-
+        
+        print(self.shadows)
+        for i in range(len(self.shadows)):
+            self.shadows[i].draw(self.surface) 
+        
         # update the campfire
         self.pyra.update(self.surface)
 
@@ -181,7 +190,7 @@ class world(object):
         
         # draw our UI elements.
         self.scoreobj.draw(self.surface)
-        self.stealth.tick(self.barbarian,self.bushes,self.nablin)
+        self.stealth.tick()
         self.health.draw(self.nablin)
         self.items.draw()
         

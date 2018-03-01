@@ -115,7 +115,7 @@ class ember(object):
         self.update()
         
         pygame.draw.rect(surface, self.color, self.rect)  
-        
+
 # This class handles the location, animation and collisions for the fire.    
 class Fire(pygame.sprite.Sprite):
 
@@ -219,7 +219,7 @@ class effect(pygame.sprite.Sprite):
 #the following class is the main Hero. It responds to key presses, initiates an "attack" and can hide in bushes.
 class HeroSprite(pygame.sprite.Sprite):
     
-    def __init__(self, x, y, target, score, surface, loot):
+    def __init__(self, x, y, target, score, surface, loot,shadows):
         
         # Call the parent class (Sprite) constructor
         super(HeroSprite,self).__init__()
@@ -260,9 +260,10 @@ class HeroSprite(pygame.sprite.Sprite):
         
         
         #creates a shadow
+        self.shadows = shadows
         self.shadow = Image()
         self.shadowimg  = nabshadow
-        
+        self.shadows.append(self.shadow)
         #stores player health
         self.health = 6
         
@@ -321,6 +322,7 @@ class HeroSprite(pygame.sprite.Sprite):
     def status(self):
         return self.health
     
+    # this function stops the player from leaving the boundary of the screen
     def checklimits(self):
         currentx, currenty = self.rect.midbottom
         if currenty >= 480:
@@ -332,18 +334,18 @@ class HeroSprite(pygame.sprite.Sprite):
             self.rect.midbottom = 800, currenty
         elif currentx <= 0:
             self.rect.midbottom = 0, currenty
-            
+     
+    #this function draws the shadow to screen       
     def shadowdraw(self):
         if self.facing == "left":
             self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
         else:
             self.shadow.update(self.shadowimg,self.rect.x+10,self.rect.y+ 45)
             
-        self.shadow.draw(self.surface)
+        #self.shadow.draw(self.surface)
             
     # this object controls player footfall sounds.
     def footfall(self):
-
         
         if self.footy == 0:
             self.foot1.play()
@@ -371,30 +373,35 @@ class HeroSprite(pygame.sprite.Sprite):
             self.rect.y -= self.speed
             self.animtick += 1
             self.moving = True
-        elif "down" in direction:
+            
+        if "down" in direction:
             self.footfall()
             self.rect.y += self.speed
             self.animtick += 1
             self.moving = True
-        elif "right" in direction:
+        
+        if "right" in direction:
             self.footfall()
             self.facing = "right"
             self.rect.x += self.speed
             self.animtick += 1
             self.moving = True
-        elif "left" in direction:
+        
+        if "left" in direction:
             self.footfall()
             self.facing = "left"
             self.rect.x -= self.speed
             self.animtick += 1
             self.moving = True
-        else:
+        
+        # if there is no movement (no messages in the movement list) set the status of the object to reflect that
+        if len(direction) == 0:
             self.moving = False
             
         if "loot" in direction:
             self.image = nabloot0
             self.mask = pygame.mask.from_surface(self.image)
-    
+            self.moving = True
             if self.facing == "left":
                 self.image = pygame.transform.flip(self.image,True,False)
                 self.mask = pygame.mask.from_surface(self.image)
@@ -448,7 +455,8 @@ class HeroSprite(pygame.sprite.Sprite):
                 self.mask = pygame.mask.from_surface(self.image)
         else:
             pass
-
+        self.shadowdraw()
+        
     # this function returns the players location with reference to the BOTTOM MIDDLE of the mask bounding box 
     def getrect(self):
         return self.rect,self.facing
@@ -458,6 +466,7 @@ class HeroSprite(pygame.sprite.Sprite):
         return self.rect.midbottom
     
     def update(self):
+        
         
         #the conditional checks to see if the player is being knocked back.
         if self.knock == True:
@@ -486,14 +495,14 @@ class HeroSprite(pygame.sprite.Sprite):
             self.move(direction,self.surface)  
         
         self.checklimits()
-            
-        self.shadowdraw()
+        
+        
 
 #the following class is the main barbarian. It should stay sleeping until the stealth meter runs out and then the barbarian wakes up and attacks.
 class BarbarianSprite(pygame.sprite.Sprite):
 
-    def __init__(self):
-        
+    def __init__(self,shadows):
+        self.shadows = shadows
         # Call the parent class (Sprite) constructor
         super(BarbarianSprite,self).__init__()
         
@@ -522,7 +531,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.shadow = Image()
         self.shadowimg  = barbshadow
         self.sleepshadowimg  = barbsleepshadow
-
+        self.shadows.append(self.shadow)
     def getstate(self):
         return self.status  
     
@@ -588,7 +597,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         else:
             self.shadow.update(self.shadowimg,self.rect.x+25,self.rect.y+ 110)
             
-        self.shadow.draw(self.surface)
+        #self.shadow.draw(self.surface)
         
 
 
@@ -671,7 +680,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         if self.animtick > 20:
             self.animtick = 0
             
-        if self.stealth.get() == 0:
+        if self.stealth.get():
             self.state = "woke"
                 
     def update(self,surface,target,stealth):
@@ -708,11 +717,12 @@ class BarbarianSprite(pygame.sprite.Sprite):
 #the following class is the bush! It sits around and provides cover for that pesky Nablin to hide from his persuiers! What a cheeky little bush!
 class Bush(pygame.sprite.Sprite):
 
-    def __init__(self,x,y):
+    def __init__(self,x,y,shadows):
 
+        self.shadows = shadows
         self.shadow = Image()
         self.shadowimg  = pygame.image.load('assets/nabshadow.png')
-
+        #self.shadows.append(self.shadow)
         # Call the parent class (Sprite) constructor
         super(Bush,self).__init__()
         
@@ -749,8 +759,9 @@ class Bush(pygame.sprite.Sprite):
         return retx,rety
         
     def update(self):
+        pass
         #be a bush for a while
-        self.shadow.draw()
+        #self.shadow.draw()
 
 
         
