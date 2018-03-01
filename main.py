@@ -155,6 +155,7 @@ class world(object):
     
     # The following function draws a frame of the game itself.
     
+    #test comment
     def game(self):
         
         self.status = "game"
