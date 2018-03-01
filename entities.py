@@ -721,8 +721,7 @@ class Bush(pygame.sprite.Sprite):
 
         self.shadows = shadows
         self.shadow = Image()
-        self.shadowimg  = pygame.image.load('assets/nabshadow.png')
-        #self.shadows.append(self.shadow)
+
         # Call the parent class (Sprite) constructor
         super(Bush,self).__init__()
         
@@ -748,6 +747,11 @@ class Bush(pygame.sprite.Sprite):
         
         self.rect.y = y
         self.rect.x = x
+        
+        shady = self.starty + 60
+        shadx = x + 20
+        self.shadow.update(nabshadow,shadx,shady)
+        self.shadows.append(self.shadow)
         
     def getpos(self):
         #return current location
