@@ -173,13 +173,31 @@ class stealthbox(object):
         self.effector = 3
         self.cool = .1
         self.coolfast = 5
+        self.colour = [255,255,255]
         
     def get(self):
         if self.metervalue >= self.metermax:
             return True
         else:
             return False
-                
+    
+    def colourize(self):
+        if self.metervalue > 0:
+            scaler = (self.metervalue / self.metermax)
+        else:
+            scaler = 0
+
+        r = 255 * scaler
+        g = 0
+        b = 255 - r   
+        self.colour = [r,g,b]
+        for i in range(len(self.colour)):
+            if self.colour[i] > 255:
+                self.colour[i] = 255
+            if self.colour[i] < 0:
+                self.colour[i] = 0     
+        print(self.colour)
+        
     def effected(self,amount):
         self.amount = amount
         self.metervalue = self.metervalue + self.amount
@@ -199,8 +217,10 @@ class stealthbox(object):
                     self.metervalue -= self.coolfast
                 else:
                     self.metervalue -= self.cool
-        
-        self.meter.update(self.x,self.y, (self.metervalue,10), white)
+        self.colourize()
+        r,g,b = self.colour[0], self.colour[1],self.colour[2]
+                
+        self.meter.update(self.x,self.y, (self.metervalue,10), (r,g,b))
         self.meter.draw(self.surface)
         
         
@@ -208,10 +228,11 @@ class stealthbox(object):
         return self.metervalue 
 
     def draw(self):
+
         self.metervalue += .5
         if self.metervalue  > self.metermax:
             self.metervalue = self.metermax
-        self.meter.update(self.x, self.y, (self.metervalue,10), white)
+        self.meter.update(self.x, self.y, (self.metervalue,10), (r,g,b))
         self.meter.draw(self.surface)
         return self.metervalue
 
@@ -393,7 +414,6 @@ class effect(pygame.sprite.Sprite):
         super(effect,self).__init__()
         self.decide = image
         self.facing = facing
-        print(self.decide)
         if self.decide == 0:
             self.image = pursesmall
         if self.decide == 1:

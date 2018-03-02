@@ -367,7 +367,7 @@ class HeroSprite(pygame.sprite.Sprite):
                 
     # this function governs movement. It receives a command from the main loop and interprets it as movement.     
     def move(self,direction,surface):
-
+        self.shadowdraw()
         if "up" in direction:
             self.footfall()
             self.rect.y -= self.speed
@@ -455,7 +455,7 @@ class HeroSprite(pygame.sprite.Sprite):
                 self.mask = pygame.mask.from_surface(self.image)
         else:
             pass
-        self.shadowdraw()
+
         
     # this function returns the players location with reference to the BOTTOM MIDDLE of the mask bounding box 
     def getrect(self):

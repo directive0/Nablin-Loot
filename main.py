@@ -11,6 +11,7 @@ from objects import *
 # flag to control whether or not game is being played on an OpenPandora handheld
 pandora = False
 
+
 # Pygame configuration calls to activate the audio buss, the display and the font driver.
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.mixer.init()
@@ -165,7 +166,7 @@ class world(object):
         # Draw the background        
         self.backimg.draw(self.surface)
         
-        print(self.shadows)
+
         for i in range(len(self.shadows)):
             self.shadows[i].draw(self.surface) 
         
