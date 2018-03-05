@@ -1,4 +1,5 @@
 import pygame
+import random
 import math
 import time
 from entities import *
@@ -182,31 +183,53 @@ class stealthbox(object):
             return False
     
     def colourize(self):
+        #print(self.metervalue)
+        #print("made it to colourize")
         if self.metervalue > 0:
             scaler = (self.metervalue / self.metermax)
         else:
             scaler = 0
-
+        #print(scaler)
         r = 255 * scaler
         g = 0
         b = 255 - r   
+        
         self.colour = [r,g,b]
+        
         for i in range(len(self.colour)):
             if self.colour[i] > 255:
                 self.colour[i] = 255
             if self.colour[i] < 0:
                 self.colour[i] = 0     
-        print(self.colour)
+        #print(self.colour)
         
+    def bound(self):
+        if self.metervalue > self.metermax:
+            self.metervalue = self.metermax
+            
+        if self.metervalue < self.x:
+            self.metervalue = self.x
+    
     def effected(self,amount):
         self.amount = amount
         self.metervalue = self.metervalue + self.amount
     
     def tick(self):
         dist = getdist(self.hero,self.enemy)
+        #print(dist)
         herowalking = self.hero.walking()
         
-        self.scaled  = self.effector - int(dist * .01)
+        #print(herowalking)
+        self.rando = random.randint(0,100)
+
+        self.rando = self.rando / float(100)
+
+
+        #print(self.rando)
+        
+        self.randeffect = self.rando * self.effector
+        #print(self.randeffect)
+        self.scaled  = self.randeffect - int(dist * .01)
         
         if herowalking:
             if self.metervalue < self.metermax:
@@ -215,16 +238,17 @@ class stealthbox(object):
             if self.metervalue > self.x:
                 if self.check():
                     self.metervalue -= self.coolfast
+                    
                 else:
                     self.metervalue -= self.cool
+        self.bound()
         self.colourize()
+        
         r,g,b = self.colour[0], self.colour[1],self.colour[2]
                 
         self.meter.update(self.x,self.y, (self.metervalue,10), (r,g,b))
         self.meter.draw(self.surface)
-        
-        
-        
+
         return self.metervalue 
 
     def draw(self):
@@ -459,34 +483,54 @@ class effect(pygame.sprite.Sprite):
 
 # the following class handles the location of items.
 class itemFrame(object):
+    # it asks for the position on screen to draw, the screen object to draw to and the score object to tell it when new loot is added.
     def __init__(self, location, surface, score):
+        
         self.surface = surface
+        
         self.location = location
+        
         self.frame = itemframe
+        
         self.items = []
+        
         self.decided = False
+        
         self.rolling = False
+        
         self.interval = 160
+        
         self.lasttime = 0
+        
         self.timer = 0
+        
         self.holdloot = []
+        
         self.score = score
+        
         self.state = 0
         
         
     def use(self,hero):
-
+        
         if len(self.holdloot) > 0 and self.state == 0:
 
             toploot = self.holdloot.pop()
             
             usedimage = toploot.use()
+            
             herorect,herofacing = hero.getrect()
+            
             self.startposx,self.startposy = herorect.center
+            
             self.state = 1
+            
             self.sprite = effect(self.startposx,self.startposy,usedimage,herofacing)
+            
             self.usedsprite = pygame.sprite.LayeredUpdates()
+            
             self.usedsprite.add(self.sprite)
+            
             self.throw()
             
     def throw(self):
@@ -498,17 +542,13 @@ class itemFrame(object):
             self.state = 0
         
     def roll(self):
-        self.timenow = pygame.time.get_ticks()
-        elapsed = self.timenow - self.lasttime
-        if elapsed < self.interval:
+       if self.rolling == True:
             self.surface.blit(itembubble, (self.lootx+10,self.looty-142))
             self.surface.blit(self.lootimage, (self.lootx+10,self.looty-142))
+            print("made it to rolling")
             self.holdloot.append(self.newloot)
-        else:
             self.rolling = False
-            
-        
-        
+
     def new(self,location):
         self.lasttime = pygame.time.get_ticks()
         self.rolling = True
@@ -521,6 +561,7 @@ class itemFrame(object):
         self.getsound.play()
         
     def additem(self, item):
+        print("added item")
         self.items.append(item)
 
         
@@ -555,10 +596,14 @@ loots = (("Coin Bag",0,100,0,"assets/purse.png"),("Pip",1,500,1,"assets/pip.png"
 
 class Loot(object):
     def __init__(self):
+        
+        # create an empty set of values for the object
         self.info = (0,0,0,0,0)
         
+        # set the state of creation at 0
         self.state = 0
         
+        # run the decision function that determines the attributes of the item
         self.decide()
 
     def use(self):
@@ -578,20 +623,32 @@ class Loot(object):
         return image
         
     def decide(self):
+
+        # create a random number between 0 and 70
         decideint = random.randint(0,70)
+        
+        #place the random number in a class attribute
         self.decideint = decideint
+        
+        # Filter the result into a set of possible outcomes
         if decideint >= 0 and decideint <= 50:
+            # set the item ID
             self.determine = 0
+            
             self.info = loots[0]
             self.state = 1
             
         if decideint >= 51 and decideint <= 60:
+            #set the item ID
             self.determine = 1
+            
             self.info = loots[1]
             self.state = 1
             
         if decideint >= 61 and decideint <= 70:
+            # set the item ID
             self.determine = 2
+            
             self.info = loots[2]
             self.state = 1
         

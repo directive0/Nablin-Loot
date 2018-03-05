@@ -219,7 +219,7 @@ class effect(pygame.sprite.Sprite):
 #the following class is the main Hero. It responds to key presses, initiates an "attack" and can hide in bushes.
 class HeroSprite(pygame.sprite.Sprite):
     
-    def __init__(self, x, y, target, score, surface, loot,shadows):
+    def __init__(self, x, y, target, score, surface, lootlist,shadows):
         
         # Call the parent class (Sprite) constructor
         super(HeroSprite,self).__init__()
@@ -268,7 +268,9 @@ class HeroSprite(pygame.sprite.Sprite):
         self.health = 6
         
         #stores player inventory
-        self.worldloot = loot
+        self.worldloot = lootlist
+        
+        #stores location of last looting (so as to stop duplicates)
         self.lastloot = (0,0)
         
 
@@ -276,7 +278,18 @@ class HeroSprite(pygame.sprite.Sprite):
     def loot(self):
         col = pygame.sprite.collide_mask(self.target, self)
 
-        return col
+        self.thisloot = self.getpos()
+        #check for collision with barbarian
+        if self.thisloot != self.lastloot:
+            self.lastloot = self.thisloot
+            tryloot = col
+        
+        #print(tryloot)
+        
+        #if collisions detected
+            if tryloot:
+                self.worldloot.new(self.getpos())
+                #make a new loot object    
     
     def use(self):
         pass
@@ -367,7 +380,6 @@ class HeroSprite(pygame.sprite.Sprite):
                 
     # this function governs movement. It receives a command from the main loop and interprets it as movement.     
     def move(self,direction,surface):
-        self.shadowdraw()
         if "up" in direction:
             self.footfall()
             self.rect.y -= self.speed
@@ -470,7 +482,9 @@ class HeroSprite(pygame.sprite.Sprite):
         
         #the conditional checks to see if the player is being knocked back.
         if self.knock == True:
+            self.shadowdraw()
             self.knockback()
+            self.shadowdraw()
         else:
             direction = getkeys()
         
@@ -480,20 +494,10 @@ class HeroSprite(pygame.sprite.Sprite):
             
             if "loot" in direction:
                 
-                self.thisloot = self.getpos()
-                #check for collision with barbarian
-                if self.thisloot != self.lastloot:
-                    self.lastloot = self.thisloot
-                    tryloot = self.loot()
-                
-                #print(tryloot)
-                
-                #if collisions detected
-                    if tryloot:
-                        self.worldloot.new(self.getpos())
-                        #make a new loot object        
+                self.loot()    
+            self.shadowdraw()
             self.move(direction,self.surface)  
-        
+            self.shadowdraw()
         self.checklimits()
         
         
