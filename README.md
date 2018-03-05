@@ -7,12 +7,9 @@ For more up to date information please visit:
 
 https://squaredwave.com/wiki/index.php?title=Nablin_Loot
 
-## Premise
-You know that game GoldenAxe? Okay, so you know that part in it when your dude is asleep and these elves come and you gotta like kick them to get little satchels or potions or something? So this game is like that but its also not that because its from the perspective of the elf. Only we call them "nablins" because they nab your stuff, yo.
+## Update: March 5th 2018
 
-So basically you are the Nablin (I call him nabbles) and the goal is to hide in the bushes (well, bush right now. the game isn't finished) and pop out and steal stuff from the sleeping barbarian. There's a stealth meter which decreases whenever you reveal yourself and eventually there will be other constraints to make it feel like a real game. If the stealth meter drops to zero then the barbarian wakes up and axes you! Possibly in the face! 
-
-Enjoy!
+I have added new behaviours for stealth and item attribution. A level timer has been installed, but its not fully functional yet.
 
 ## Update: Dec 12 2017
 
