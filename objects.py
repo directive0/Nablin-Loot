@@ -177,10 +177,10 @@ class stealthbox(object):
         self.colour = [255,255,255]
         
     def get(self):
-        if self.metervalue >= self.metermax:
-            return True
-        else:
-            return False
+        
+        floatvalue = float(self.metervalue) / float(self.metermax)
+        
+        return floatvalue
     
     def colourize(self):
         #print(self.metervalue)
@@ -231,6 +231,7 @@ class stealthbox(object):
         #print(self.randeffect)
         self.scaled  = self.randeffect - int(dist * .01)
         
+        print(self.scaled)
         if herowalking:
             if self.metervalue < self.metermax:
                 self.metervalue += self.scaled
@@ -509,7 +510,9 @@ class itemFrame(object):
         self.score = score
         
         self.state = 0
-        
+
+        self.getsound = pygame.mixer.Sound("assets/get.ogg")
+                
         
     def use(self,hero):
         
@@ -534,30 +537,55 @@ class itemFrame(object):
             self.throw()
             
     def throw(self):
-
+        # give our sprite object the location data
         self.sprite.update(self.startposx,self.startposy)
         
         if self.sprite.active() == False:
 
             self.state = 0
+    
+    # this function draws the item bubble to screen 
+    def bubble(self):
         
+        self.surface.blit(itembubble, (self.lootx+10,self.looty-142))
+
+        self.surface.blit(self.lootimage, (self.lootx+10,self.looty-142))
+
+    # this function adds the newloot object to the list of items in inventory.
     def roll(self):
+        # checks to see if the player is in a loot state
        if self.rolling == True:
-            self.surface.blit(itembubble, (self.lootx+10,self.looty-142))
-            self.surface.blit(self.lootimage, (self.lootx+10,self.looty-142))
-            print("made it to rolling")
+            #print("made it to rolling")
+            # add the most recent loot to the loot list
             self.holdloot.append(self.newloot)
+
+            # signal the end of looting
             self.rolling = False
+            self.bubble()
+
 
     def new(self,location):
+        # get the time
         self.lasttime = pygame.time.get_ticks()
+        
+        # set the looting flag
         self.rolling = True
+        
+        # record the location
         self.lootx, self.looty = location
+        
+        # instantiate a new loot object
         self.newloot = Loot()
+        
+        # pull the appropriate image for the loot
         self.lootimage = self.newloot.getimage()
+
+        # get the loot value and add to the score
         self.lootvalue = self.newloot.get(2)
         self.score.add(self.lootvalue)
-        self.getsound = pygame.mixer.Sound("assets/get.ogg")
+
+        # play the loot sound
+
         self.getsound.play()
         
     def additem(self, item):
@@ -567,18 +595,37 @@ class itemFrame(object):
         
     
     def draw(self):
+        
+        # check state
+        
+        # if rolling then perform rolling. this is inelegant and i will probably refactor this
         if self.rolling:
             self.roll()
           
+        # get current position
         self.x,self.y = self.location
+        
+        # draw item frame to screen
         self.surface.blit(itemframe, (self.x,self.y))
+        
+        # if the holdloot list has items in it
         if len(self.holdloot) > 0:
+            # get the last item in the list
             toploot = self.holdloot[-1]
-            topimage = toploot.getimage()
-            self.surface.blit(topimage, (self.x+26,self.y+26))
             
+            #grab the image of it
+            topimage = toploot.getimage()
+            
+            # draw it inside the frame
+            self.surface.blit(topimage, (self.x+26,self.y+26))
+        
+        # if the current state is 1 or "throw"
         if self.state == 1:
+            
+            # call the throw routine
             self.throw()
+            
+            
             self.usedsprite.draw(self.surface)
             
 # The following class determines the kind of item that will be picked up by the player. The class is instantiated when the player loots their target. 

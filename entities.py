@@ -21,7 +21,6 @@ z1 = pygame.image.load("assets/z2.png")
 z2 = pygame.image.load("assets/z3.png")
 
 
-
 pygame.display.set_icon(nablin2)
 
 # the following images are for the barbarian
@@ -33,6 +32,11 @@ barbshadow = pygame.image.load('assets/barbshadow.png')
 
 #the following images are for shadows
 nabshadow = pygame.image.load('assets/nabshadow.png')
+
+# campfire images
+logsimg = pygame.image.load('assets/CampfireLogs.png')
+auraimg = pygame.image.load('assets/CampfireLight.png')
+
 
 # the following function returns the angle to a desired destination when given an origin.
 def get_angle(origin, destination):
@@ -152,10 +156,10 @@ class Fire(pygame.sprite.Sprite):
         self.speed = 1
         self.animtick = 0
         self.logs = Image()
-        self.logsimg = pygame.image.load('assets/CampfireLogs.png')
+        self.logsimg = logsimg
         self.logs.update(self.logsimg,self.startx,self.starty+20,)
         self.aura = Image()
-        self.auraimg = pygame.image.load('assets/CampfireLight.png')
+        self.auraimg = auraimg
         self.aura.update(self.auraimg,self.startx-8,self.starty+20,)
         self.ember1 = ember(self.rect.midbottom)
         self.ember2 = ember(self.rect.midbottom)
@@ -630,7 +634,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
                 self.image = pygame.transform.flip(self.image,True,False)
 
 
-        # move barb in direct way:
+        # the following items check the angle and distance to the target and each anim-tick moves the barbarian in that direction.
 
         self.pos = self.rect.midbottom
         self.x, self.y = self.pos
@@ -643,7 +647,17 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.facing = "right"
         if self.x > self.playerx:
             self.facing = "left"
-
+        
+        #print(self.stealth.get())
+        
+        
+        if self.stealth.get() <= .1:
+         
+            dist = getdist(self.target,self)
+            
+            if dist > 350:
+                self.state = "dozing"
+                
 
         self.animtick += self.animspeed
 
@@ -667,9 +681,15 @@ class BarbarianSprite(pygame.sprite.Sprite):
         
         if collision:
             self.state = "gotcha"
-            
+    
+    def snore(self):
+        pass
+        
+    def doze(self):
+        self.state = "asleep"
 
     def asleep(self):
+        self.snore()
         self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y + 25)
         self.shadow.draw(self.surface)
         
@@ -684,8 +704,9 @@ class BarbarianSprite(pygame.sprite.Sprite):
         if self.animtick > 20:
             self.animtick = 0
             
-        if self.stealth.get():
+        if self.stealth.get() == 1:
             self.state = "woke"
+        
                 
     def update(self,surface,target,stealth):
         self.surface = surface
@@ -706,6 +727,9 @@ class BarbarianSprite(pygame.sprite.Sprite):
         if self.state == "asleep":
             self.asleep()
     
+        if self.state == "dozing":
+            self.doze()
+            
     def gotcha(self):
         if self.state == "gotcha":
             self.state = "aggro"
