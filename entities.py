@@ -236,6 +236,8 @@ class HeroSprite(pygame.sprite.Sprite):
         self.image = nablin0
 
         self.speed =  10
+        self.speedrun = 10
+        self.speedwalk = 4
         self.animtick = 0
         
         # variables to control knockback events
@@ -277,6 +279,8 @@ class HeroSprite(pygame.sprite.Sprite):
         #stores location of last looting (so as to stop duplicates)
         self.lastloot = (0,0)
         
+        #amount of noise made
+        self.noise = 0
 
     # this function governs looting, it is a work in progress
     def loot(self):
@@ -381,9 +385,23 @@ class HeroSprite(pygame.sprite.Sprite):
     # this function is called by the stealth meter and returns the current status of the player
     def walking(self):
         return self.moving
+    
+    def noise(self):
+        return self.noise
                 
     # this function governs movement. It receives a command from the main loop and interprets it as movement.     
     def move(self,direction,surface):
+    
+    #we need to add a function that detects between walking and sprinting. sprinting should cost more stealth
+        self.moving = False
+        if "run" in direction:
+            self.speed = self.speedwalk
+            self.noise = 1
+        else:
+            self.noise = 2
+            self.speed = self.speedrun
+            
+
         if "up" in direction:
             self.footfall()
             self.rect.y -= self.speed
@@ -418,6 +436,7 @@ class HeroSprite(pygame.sprite.Sprite):
             self.image = nabloot0
             self.mask = pygame.mask.from_surface(self.image)
             self.moving = True
+            self.noise = 3
             if self.facing == "left":
                 self.image = pygame.transform.flip(self.image,True,False)
                 self.mask = pygame.mask.from_surface(self.image)

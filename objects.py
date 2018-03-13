@@ -130,7 +130,8 @@ def getkeys():
     direction = []
     key = pygame.key.get_pressed()
 
-    
+    if key[pygame.K_END]:
+        direction.append("run")
     
     if key[pygame.K_SPACE]:
         direction.append("loot")
@@ -171,10 +172,11 @@ class stealthbox(object):
         self.x = x
         self.y = y
         self.surface = surface
-        self.effector = 3
+        self.effector = 7
         self.cool = .1
         self.coolfast = 5
         self.colour = [255,255,255]
+        self.toggle = True
         
     def get(self):
         
@@ -194,7 +196,6 @@ class stealthbox(object):
         g = 0
         b = 255 - r   
         
-        self.colour = [r,g,b]
         
         for i in range(len(self.colour)):
             if self.colour[i] > 255:
@@ -202,6 +203,22 @@ class stealthbox(object):
             if self.colour[i] < 0:
                 self.colour[i] = 0     
         #print(self.colour)
+        
+        # measures current stealth and if the nezt move will likely trugger barbit flashes
+        mostmeter = self.metermax *.95
+        vibe = self.metervalue + (self.effector * 3)
+        
+        
+        if vibe >= self.metermax:
+            if self.toggle == True:
+                self.toggle = False
+                r,g,b = 255,0,0
+            else:
+                r,g,b = 255,255,0
+                self.toggle = True
+            
+        self.colour = [r,g,b]
+        print(mostmeter)
         
     def bound(self):
         if self.metervalue > self.metermax:
@@ -217,7 +234,7 @@ class stealthbox(object):
     def tick(self):
         dist = getdist(self.hero,self.enemy)
         #print(dist)
-        herowalking = self.hero.walking()
+        heronoise = self.hero.noise
         
         #print(herowalking)
         self.rando = random.randint(0,100)
@@ -231,17 +248,26 @@ class stealthbox(object):
         #print(self.randeffect)
         self.scaled  = self.randeffect - int(dist * .01)
         
-        print(self.scaled)
-        if herowalking:
-            if self.metervalue < self.metermax:
-                self.metervalue += self.scaled
-        else:
+        if self.scaled < 0:
+            self.scaled = 0
+        
+        #print(self.scaled)
+        if not self.hero.moving:
             if self.metervalue > self.x:
                 if self.check():
                     self.metervalue -= self.coolfast
-                    
                 else:
                     self.metervalue -= self.cool
+                    
+        if self.hero.moving == True:
+            if heronoise == 1:
+                if self.metervalue < self.metermax:
+                    self.metervalue += self.scaled * .5
+            
+            if heronoise == 2:
+                if self.metervalue < self.metermax:
+                    self.metervalue += self.scaled 
+        
         self.bound()
         self.colourize()
         
@@ -260,7 +286,8 @@ class stealthbox(object):
         self.meter.update(self.x, self.y, (self.metervalue,10), (r,g,b))
         self.meter.draw(self.surface)
         return self.metervalue
-
+        
+    # checks to see if im hiding behind a bush
     def check(self):
         
         collidersum = 0
