@@ -70,15 +70,24 @@ class Image(object):
         self.x = 258
         self.y = 66
         self.Img = heart
+        self.center = False
     
-    def update(self, image, nx, ny):
+    def update(self, image, nx, ny, center = False):
+        self.center = center
         self.x = nx
         self.y = ny
         self.Img = image
         
+        
     
     def draw(self, surface):
-        surface.blit(self.Img, (self.x,self.y))
+        if self.center == True:
+            self.rect = self.Img.get_rect()
+            self.rect.centerx = self.x
+            self.rect.centery = self.y
+            surface.blit(self.Img, (self.rect.centerx,self.rect.centery))
+        else:
+            surface.blit(self.Img, (self.x,self.y))
 
 # the following class displays simple rectangles.
 class Box(object):
@@ -204,8 +213,9 @@ class stealthbox(object):
                 self.colour[i] = 0     
         #print(self.colour)
         
-        # measures current stealth and if the nezt move will likely trugger barbit flashes
-        mostmeter = self.metermax *.95
+        # measures current stealth and if the next three moves will likely trigger barb it flashes
+
+        
         vibe = self.metervalue + (self.effector * 3)
         
         
@@ -218,7 +228,7 @@ class stealthbox(object):
                 self.toggle = True
             
         self.colour = [r,g,b]
-        print(mostmeter)
+
         
     def bound(self):
         if self.metervalue > self.metermax:
@@ -232,27 +242,32 @@ class stealthbox(object):
         self.metervalue = self.metervalue + self.amount
     
     def tick(self):
+        
+        # Get the distance of the hero from the enemy
         dist = getdist(self.hero,self.enemy)
-        #print(dist)
+        
+        # determine how much noise the player is making (sneak, run, loot)
         heronoise = self.hero.noise
         
-        #print(herowalking)
+        # make a random value
         self.rando = random.randint(0,100)
-
+        
+        # convert to a decimal
         self.rando = self.rando / float(100)
 
-
-        #print(self.rando)
-        
+        # use random decimal to change the effector (from 0-100 %)
         self.randeffect = self.rando * self.effector
-        #print(self.randeffect)
+
+        # Scale the effect based on distance from the barb
         self.scaled  = self.randeffect - int(dist * .01)
         
+        # if the effect is negative, make it zero (stops erroneous cool down)
         if self.scaled < 0:
             self.scaled = 0
         
-        #print(self.scaled)
+        # if the hero is moving
         if not self.hero.moving:
+            # if the current stealth value is greater than the lowest value possible
             if self.metervalue > self.x:
                 if self.check():
                     self.metervalue -= self.coolfast
@@ -278,14 +293,6 @@ class stealthbox(object):
 
         return self.metervalue 
 
-    def draw(self):
-
-        self.metervalue += .5
-        if self.metervalue  > self.metermax:
-            self.metervalue = self.metermax
-        self.meter.update(self.x, self.y, (self.metervalue,10), (r,g,b))
-        self.meter.draw(self.surface)
-        return self.metervalue
         
     # checks to see if im hiding behind a bush
     def check(self):
@@ -616,7 +623,7 @@ class itemFrame(object):
         self.getsound.play()
         
     def additem(self, item):
-        print("added item")
+        #print("added item")
         self.items.append(item)
 
         

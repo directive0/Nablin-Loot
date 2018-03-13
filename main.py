@@ -9,7 +9,7 @@ from entities import *
 from objects import *
 
 # flag to control whether or not game is being played on an OpenPandora handheld
-pandora = True
+pandora = False
 
 
 # Pygame configuration calls to activate the audio buss, the display and the font driver.
@@ -39,6 +39,7 @@ gameover = False
 
 def plantbushes(numbush,startx,starty,endy,variation,spritelist, bushlist):
     #determine spacing for trees
+    
     distance = abs(starty-endy)
     
     jump = int(distance / numbush)
@@ -55,6 +56,7 @@ def plantbushes(numbush,startx,starty,endy,variation,spritelist, bushlist):
     return bushes
 
 def sortsprites(sprites):
+    
     for i in sprites:
         target = i
         
@@ -87,8 +89,34 @@ class world(object):
             pygame.mouse.set_visible(False)
         else:
             self.surface = pygame.display.set_mode(screenSize)
+            
+        self.numbushes = 6
+        self.bushes = []
+        self.effects = []
         self.start()
+        
+    def effectadd(self,effect):
+        self.effects.append(effect)
     
+    # the following seeds our world with bushes based on the numbushes variable
+    def seedworld(self):
+
+        print("terraforming")
+
+        for i in range(self.numbushes):
+            toporbot = random.randint(0,1)
+            
+            if toporbot:
+                randy = random.randint(78,142)
+            else:
+                randy = random.randint(361,445)
+
+                
+            randx = random.randint(82,717)
+            print(randx,randy)
+
+            self.bushes.append(Bush(randx,randy,self.shadows))
+
     # The following function loads our sprites, gets the audio ready and prepares the scene for creation.
     def start(self):
         
@@ -100,11 +128,16 @@ class world(object):
         
         self.shadows = []
         
-        self.barbarian = BarbarianSprite(self.shadows)
+        self.barbarian = BarbarianSprite(self)
         self.nablin = HeroSprite(100,64,self.barbarian,self.scoreobj,self.surface, self.items,self.shadows)
-        self.harold = Bush(224,240,self.shadows)
-        self.walter = Bush(550,240,self.shadows)
-        self.roy = Bush(400,100,self.shadows)
+        
+        self.seedworld()
+
+        # self.harold = Bush(224,240,self.shadows)
+        # self.walter = Bush(550,240,self.shadows)
+        # self.roy = Bush(400,100,self.shadows)
+        # self.bushes = [self.harold,self.walter,self.roy]
+
         self.pyra = Fire(510, 350,self.nablin,self.barbarian)
         self.splashimg = Image()
         self.splashimg.update(splash,0,0)
@@ -113,7 +146,7 @@ class world(object):
         self.all_sprites_list = pygame.sprite.LayeredUpdates()
 
 
-        self.bushes = [self.harold,self.walter,self.roy]
+  
         # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
         # # The following objects are the Item Frame, the Hearts, score, and the stealth bar.
         self.health = damage((140,4),self.surface)
@@ -168,7 +201,9 @@ class world(object):
         
 
         for i in range(len(self.shadows)):
-            self.shadows[i].draw(self.surface) 
+            self.shadows[i].draw(self.surface)
+            
+
         
         # update the campfire
         self.pyra.update(self.surface)
@@ -189,7 +224,8 @@ class world(object):
         # draw the vignette overlay
         self.overlay.draw(self.surface)
         
-        
+        for i in range(len(self.effects)):
+            self.effects[i].draw(self.surface)
         # draw our UI elements.
         self.scoreobj.draw(self.surface)
         self.stealth.tick()

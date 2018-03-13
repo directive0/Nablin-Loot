@@ -27,6 +27,13 @@ pygame.display.set_icon(nablin2)
 barbattack = pygame.image.load("assets/barbattack.png")
 barbsleep = pygame.image.load("assets/barbariansleeping.png")
 barbsnore = pygame.image.load("assets/barbariansnore.png")
+
+z0 = pygame.image.load("assets/z0.png")
+z1 = pygame.image.load("assets/z1.png")
+z2 = pygame.image.load("assets/z2.png")
+z3 = pygame.image.load("assets/z3.png")
+
+
 barbsleepshadow = pygame.image.load("assets/barbsleepshadow.png")
 barbshadow = pygame.image.load('assets/barbshadow.png')
 
@@ -528,8 +535,9 @@ class HeroSprite(pygame.sprite.Sprite):
 #the following class is the main barbarian. It should stay sleeping until the stealth meter runs out and then the barbarian wakes up and attacks.
 class BarbarianSprite(pygame.sprite.Sprite):
 
-    def __init__(self,shadows):
-        self.shadows = shadows
+    def __init__(self,world):
+        self.world = world
+        self.shadows = self.world.shadows
         # Call the parent class (Sprite) constructor
         super(BarbarianSprite,self).__init__()
         
@@ -559,6 +567,12 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.shadowimg  = barbshadow
         self.sleepshadowimg  = barbsleepshadow
         self.shadows.append(self.shadow)
+        
+        self.snores = Image()
+        self.world.effects.append(self.snores)
+
+        
+        
     def getstate(self):
         return self.status  
     
@@ -596,6 +610,10 @@ class BarbarianSprite(pygame.sprite.Sprite):
             return False
 
     def woke(self):
+        try:
+            self.shadows.remove(self.snores)
+        except:
+            pass
         self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y+ 25)
         self.shadow.draw(self.surface)
         
@@ -702,7 +720,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.state = "gotcha"
     
     def snore(self):
-        pass
+        self.snores.update(z0,self.rect.x,self.rect.y)
         
     def doze(self):
         self.state = "asleep"
@@ -761,7 +779,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
 
-#the following class is the bush! It sits around and provides cover for that pesky Nablin to hide from his persuiers! What a cheeky little bush!
+#the following class is the bush! It sits around and provides cover for that pesky Nablin to hide from his persuers! What a cheeky little bush!
 class Bush(pygame.sprite.Sprite):
 
     def __init__(self,x,y,shadows):
@@ -786,18 +804,19 @@ class Bush(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         # image.
         # Update the position of this object by setting the values
-        # of rect.x and rect.y
+        # of rect.centerx and rect.centery
         self.rect = self.image.get_rect()
         
-        self.starty = y   
-        self.startx = x
+        self.rect.centery = y
+        self.rect.centerx = x
         
-        self.rect.y = y
-        self.rect.x = x
+        shady = self.rect.centery 
+        shadx = self.rect.centerx
         
-        shady = self.starty + 60
-        shadx = x + 20
-        self.shadow.update(nabshadow,shadx,shady)
+        #print(shadx,shady)
+        #print(self.rect.centerx,self.rect.centery)
+        
+        self.shadow.update(nabshadow,shadx,shady, center = True)
         self.shadows.append(self.shadow)
         
     def getpos(self):
