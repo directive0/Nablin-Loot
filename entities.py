@@ -546,6 +546,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.shadow = barbsleepshadow
         # initializes the animation ticks
         self.animtick = 0
+        self.snoretick = 0
         
         # sets the characters facing direction
         self.facing = "right"
@@ -610,8 +611,9 @@ class BarbarianSprite(pygame.sprite.Sprite):
             return False
 
     def woke(self):
+        
         try:
-            self.shadows.remove(self.snores)
+            self.world.effects.remove(self.snores)
         except:
             pass
         self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y+ 25)
@@ -720,7 +722,21 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.state = "gotcha"
     
     def snore(self):
-        self.snores.update(z0,self.rect.x,self.rect.y)
+
+        
+        if self.snoretick == 0:
+            self.snores.update(z0,self.rect.x,self.rect.y)
+        if self.snoretick == 1:
+            self.snores.update(z1,self.rect.x,self.rect.y)
+        if self.snoretick == 2:
+            self.snores.update(z2,self.rect.x,self.rect.y)
+        if self.snoretick == 3:
+            self.snores.update(z3,self.rect.x,self.rect.y)
+        
+        self.snoretick += .2
+        
+        if self.snoretick > 3:
+            self.snoretick = 0
         
     def doze(self):
         self.state = "asleep"

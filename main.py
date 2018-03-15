@@ -1,4 +1,4 @@
-# Nablin Loot v0.13
+# Nablin Loot v0.14
 # C.Barrett - 2018
 
 # Pygame controls the graphical elements of the scene
