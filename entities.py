@@ -554,22 +554,8 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.speed = 4
         self.animspeed = .5
         # Fetch the rectangle object that has the dimensions of the image
-        # image.
-        # Update the position of this object by setting the values
-        # of rect.x and rect.y
-        self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
-        self.starty = 250
-        self.startx = 320
-        self.state = "asleep"
-        self.position(220+160,250)
-        #creates a shadow
-        self.shadow = Image()
-        self.shadowimg  = barbshadow
-        self.sleepshadowimg  = barbsleepshadow
-        self.shadows.append(self.shadow)
-        
-        self.snores = Image()
+        # image.te        self.snores = Image()
+        self.snore()
         self.world.effects.append(self.snores)
 
         
@@ -722,18 +708,19 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.state = "gotcha"
     
     def snore(self):
-
+        
+        snorposx,snorposy = self.rect.x + 30, self.rect.y - 40
         
         if self.snoretick == 0:
-            self.snores.update(z0,self.rect.x,self.rect.y)
+            self.snores.update(z0,snorposx,snorposy)
         if self.snoretick == 1:
-            self.snores.update(z1,self.rect.x,self.rect.y)
+            self.snores.update(z1,snorposx,snorposy)
         if self.snoretick == 2:
-            self.snores.update(z2,self.rect.x,self.rect.y)
+            self.snores.update(z2,snorposx,snorposy)
         if self.snoretick == 3:
-            self.snores.update(z3,self.rect.x,self.rect.y)
+            self.snores.update(z3,snorposx,snorposy)    
         
-        self.snoretick += .2
+        self.snoretick += 1
         
         if self.snoretick > 3:
             self.snoretick = 0
@@ -742,7 +729,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         self.state = "asleep"
 
     def asleep(self):
-        self.snore()
+        
         self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y + 25)
         self.shadow.draw(self.surface)
         
@@ -750,6 +737,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.image =  barbsleep
             
         elif self.animtick == 10:
+            self.snore()
             self.image =  barbsnore
 
         self.animtick += .5
