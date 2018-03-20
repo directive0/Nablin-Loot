@@ -282,6 +282,9 @@ class stealthbox(object):
             if heronoise == 2:
                 if self.metervalue < self.metermax:
                     self.metervalue += self.scaled 
+            if heronoise == 3:
+                if self.metervalue < self.metermax:
+                    self.metervalue += self.scaled * 1.05
         
         self.bound()
         self.colourize()

@@ -557,8 +557,8 @@ class BarbarianSprite(pygame.sprite.Sprite):
         # image.
         # Update the position of this object by setting the values
         # of rect.x and rect.y
-        self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
+        self.refresh()
+        
         self.starty = 250
         self.startx = 320
         self.state = "asleep"
@@ -571,7 +571,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
         
         self.snores = Image()
         self.world.effects.append(self.snores)
-
+        self.snore()
         
         
     def getstate(self):
@@ -609,17 +609,36 @@ class BarbarianSprite(pygame.sprite.Sprite):
             return True
         else:
             return False
-
+ 
+    def walkingshadow(self):
+        if self.facing == "right":
+            self.shadow.update(self.shadowimg,self.rect.x,self.rect.y+ 110)
+        else:
+            self.shadow.update(self.shadowimg,self.rect.x+25,self.rect.y+ 110)
+ 
+    #the following class updates the location of the shadow object
+    def sleepshadow(self):
+        
+        self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y + 25)
+        #self.shadow.update(self.sleepshadowimg,self.rect.centerx,self.rect.centery)
+        
+        self.shadow.draw(self.surface)
+ 
+    #the following class handles the actions of the barb when they are awoken.
     def woke(self):
+        
+        #remove the snoring effect from the list of world effects
         
         try:
             self.world.effects.remove(self.snores)
         except:
             pass
-        self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y+ 25)
-        self.shadow.draw(self.surface)
+        
+        #update the shadow for sleeping    
+        self.sleepshadow()
         
         self.image = pygame.image.load("assets/barbarianwake.png")
+        self.refresh()
         self.animtick += 1
 
         if self.animtick >= 25:
@@ -639,10 +658,7 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.animtick = 0
 
         
-        if self.facing == "right":
-            self.shadow.update(self.shadowimg,self.rect.x,self.rect.y+ 110)
-        else:
-            self.shadow.update(self.shadowimg,self.rect.x+25,self.rect.y+ 110)
+        self.walkingshadow()
             
         #self.shadow.draw(self.surface)
         
@@ -671,7 +687,8 @@ class BarbarianSprite(pygame.sprite.Sprite):
             
             if self.facing == "right":
                 self.image = pygame.transform.flip(self.image,True,False)
-
+        
+        #self.refresh()
 
         # the following items check the angle and distance to the target and each anim-tick moves the barbarian in that direction.
 
@@ -694,7 +711,8 @@ class BarbarianSprite(pygame.sprite.Sprite):
          
             dist = getdist(self.target,self)
             
-            if dist > 350:
+            if dist > 100:
+                self.animtick = 0
                 self.state = "dozing"
                 
 
@@ -722,36 +740,74 @@ class BarbarianSprite(pygame.sprite.Sprite):
             self.state = "gotcha"
     
     def snore(self):
-
+        
+        snorex = self.rect.x + 30
+        snorey = self.rect.y - 40
         
         if self.snoretick == 0:
-            self.snores.update(z0,self.rect.x,self.rect.y)
+            self.snores.update(z0,snorex,snorey)
         if self.snoretick == 1:
-            self.snores.update(z1,self.rect.x,self.rect.y)
+            self.snores.update(z1,snorex,snorey)
         if self.snoretick == 2:
-            self.snores.update(z2,self.rect.x,self.rect.y)
+            self.snores.update(z2,snorex,snorey)
         if self.snoretick == 3:
-            self.snores.update(z3,self.rect.x,self.rect.y)
+            self.snores.update(z3,snorex,snorey)
         
-        self.snoretick += .2
+        self.snoretick += 1
         
         if self.snoretick > 3:
             self.snoretick = 0
         
     def doze(self):
-        self.state = "asleep"
+        
+        self.image = pygame.image.load("assets/barbarianstand.png")
+        self.refresh
+        
+        if self.facing == "right":
+            self.image = pygame.transform.flip(self.image,True,False)
+        
+        if self.animtick >= 0 and self.animtick <= 10:
+            self.facing = "right"
 
+        if self.animtick >= 11 and self.animtick <= 19:
+            self.facing = "left"
+
+        if self.animtick >= 20 and self.animtick <= 29:
+            self.facing = "right"
+
+        if self.animtick > 30:
+            self.state = "asleep"
+            
+        self.animtick += 1
+    
+    def refresh(self):
+        try:
+            print(self.rect)
+
+            oldx,oldy = self.rect.x,self.rect.y
+        except:
+            pass
+            
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        try:
+            self.rect.x,self.rect.y=oldx,oldy
+        except:
+            pass    
+        print("and then")
+        print(self.rect)    
     def asleep(self):
-        self.snore()
-        self.shadow.update(self.sleepshadowimg,self.rect.x,self.rect.y + 25)
-        self.shadow.draw(self.surface)
         
         if self.animtick == 0:
             self.image =  barbsleep
             
         elif self.animtick == 10:
             self.image =  barbsnore
-
+            self.snore()
+            
+        self.refresh()
+        
         self.animtick += .5
         
         if self.animtick > 20:
@@ -760,6 +816,8 @@ class BarbarianSprite(pygame.sprite.Sprite):
         if self.stealth.get() == 1:
             self.state = "woke"
         
+        self.sleepshadow()
+
                 
     def update(self,surface,target,stealth):
         self.surface = surface

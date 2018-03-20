@@ -1,4 +1,4 @@
-# Nablin Loot v0.14
+# Nablin Loot v0.140
 # C.Barrett - 2018
 
 # Pygame controls the graphical elements of the scene
@@ -9,7 +9,7 @@ from entities import *
 from objects import *
 
 # flag to control whether or not game is being played on an OpenPandora handheld
-pandora = False
+pandora = True
 
 
 # Pygame configuration calls to activate the audio buss, the display and the font driver.
