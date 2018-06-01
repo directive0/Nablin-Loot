@@ -1,0 +1,32 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Barbarian Looking 2.png-f7475c58f5a7be0dbc77c8c4105d7f9f.stex"
+
+[deps]
+
+source_file="res://Barbarian Looking 2.png"
+source_md5="665dd3b0672e0b5064407c4638285106"
+
+dest_files=[ "res://.import/Barbarian Looking 2.png-f7475c58f5a7be0dbc77c8c4105d7f9f.stex" ]
+dest_md5="c2c2b81dad7102dbf78203934bdb216d"
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=false
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

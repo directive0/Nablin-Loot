@@ -1,0 +1,32 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Barbarian Sleeping Breath P2.png-62cd2c695e202868e51713f0ddf3070c.stex"
+
+[deps]
+
+source_file="res://Barbarian Sleeping Breath P2.png"
+source_md5="34e0f8306e23a0f606ec1150d296f03b"
+
+dest_files=[ "res://.import/Barbarian Sleeping Breath P2.png-62cd2c695e202868e51713f0ddf3070c.stex" ]
+dest_md5="e7bcadffdebd989b9928d17f0ef5689a"
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=false
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

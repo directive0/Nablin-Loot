@@ -1,0 +1,32 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Bush Sparkle 2.png-446dcced384d48a24058693ba166d70c.stex"
+
+[deps]
+
+source_file="res://Bush Sparkle 2.png"
+source_md5="4c6248ffd757769f32b8211182f024e6"
+
+dest_files=[ "res://.import/Bush Sparkle 2.png-446dcced384d48a24058693ba166d70c.stex" ]
+dest_md5="928bb9251bf182a2a5379d8a44bd1d33"
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

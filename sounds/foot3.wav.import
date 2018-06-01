@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/foot3.wav-0c7d1e1a60c13a8b6132cd382e8f65d7.sample"
+
+[deps]
+
+source_file="res://sounds/foot3.wav"
+source_md5="8f02daef8af1366c5f33b7ba85fe3f61"
+
+dest_files=[ "res://.import/foot3.wav-0c7d1e1a60c13a8b6132cd382e8f65d7.sample" ]
+dest_md5="ccddd6c977076acacccf51d2a5221d65"
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

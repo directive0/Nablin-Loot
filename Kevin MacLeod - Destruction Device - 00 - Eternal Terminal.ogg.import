@@ -1,0 +1,18 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Kevin MacLeod - Destruction Device - 00 - Eternal Terminal.ogg-ddd17f8807622615ce5b7435e2dab157.oggstr"
+
+[deps]
+
+source_file="res://Kevin MacLeod - Destruction Device - 00 - Eternal Terminal.ogg"
+source_md5="3e60b31b9e10c33994936d647e4e7126"
+
+dest_files=[ "res://.import/Kevin MacLeod - Destruction Device - 00 - Eternal Terminal.ogg-ddd17f8807622615ce5b7435e2dab157.oggstr" ]
+dest_md5="e87b2d2e24d13fc8ef6cbf0060b907a0"
+
+[params]
+
+loop=true
+loop_offset=0

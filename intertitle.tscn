@@ -1,0 +1,325 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://intertitle.gd" type="Script" id=1]
+[ext_resource path="res://nablin.png" type="Texture" id=2]
+[ext_resource path="res://Wizard Stand.png" type="Texture" id=3]
+[ext_resource path="res://overlay.png" type="Texture" id=4]
+[ext_resource path="res://dungeonlarge.tres" type="DynamicFont" id=5]
+[ext_resource path="res://dungeonsmall.tres" type="DynamicFont" id=6]
+[ext_resource path="res://oldsih.tres" type="DynamicFont" id=7]
+[ext_resource path="res://Kevin MacLeod - Destruction Device - 00 - Eternal Terminal.ogg" type="AudioStream" id=8]
+[ext_resource path="res://barbariansleeping.png" type="Texture" id=9]
+[ext_resource path="res://flasksmall.png" type="Texture" id=10]
+[ext_resource path="res://pursesmall.png" type="Texture" id=11]
+
+[node name="intertitle" type="Control" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+
+[node name="Panel" type="Panel" parent="." index="0"]
+
+modulate = Color( 0, 0, 0, 1 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 2.0
+margin_right = 2.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Material", "Rect", "Theme", "Visibility", "custom_styles" ]
+
+[node name="nablin" type="Sprite" parent="." index="1"]
+
+position = Vector2( 167.957, 350.806 )
+texture = ExtResource( 2 )
+
+[node name="Wizard Stand" type="Sprite" parent="." index="2"]
+
+position = Vector2( 708.51, 97.585 )
+texture = ExtResource( 3 )
+
+[node name="overlay" type="Sprite" parent="." index="3"]
+
+texture = ExtResource( 4 )
+centered = false
+_sections_unfolded = [ "Offset", "Transform" ]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="top" type="Control" parent="." index="4"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 13.0
+margin_bottom = 181.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="night_label" type="Label" parent="top" index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+margin_left = -161.0
+margin_right = 160.0
+margin_bottom = 122.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+text = "First Night"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Material", "Visibility" ]
+
+[node name="objectives" type="Control" parent="." index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -125.0
+margin_bottom = 41.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Anchor" ]
+
+[node name="title" type="Label" parent="objectives" index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+margin_left = -200.0
+margin_right = 200.0
+margin_bottom = 63.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+text = "\"Just a Quick Nab\""
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Visibility", "custom_fonts" ]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="objectives" index="1"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -400.0
+margin_top = -99.0
+margin_right = 400.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 12
+alignment = 0
+_sections_unfolded = [ "Anchor", "Margin", "Size Flags", "Theme", "custom_constants" ]
+
+[node name="obj1" type="Label" parent="objectives/VBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 800.0
+margin_bottom = 25.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 7 )
+text = "In 1 minute"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Size Flags", "custom_fonts" ]
+
+[node name="obj2" type="Label" parent="objectives/VBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 37.0
+margin_right = 800.0
+margin_bottom = 62.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 7 )
+text = "Get 10,000 points"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_fonts" ]
+
+[node name="obj3" type="Label" parent="objectives/VBoxContainer" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 74.0
+margin_right = 800.0
+margin_bottom = 99.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 7 )
+text = "Loot a potion"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_fonts" ]
+
+[node name="outcome" type="Label" parent="objectives/VBoxContainer" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 111.0
+margin_right = 800.0
+margin_bottom = 174.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "Failed"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_colors", "custom_fonts" ]
+
+[node name="fade_in" type="Timer" parent="." index="6"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = true
+autostart = true
+
+[node name="title" type="Timer" parent="." index="7"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = false
+
+[node name="obj1" type="Timer" parent="." index="8"]
+
+process_mode = 1
+wait_time = 0.9
+one_shot = false
+autostart = false
+
+[node name="obj2" type="Timer" parent="." index="9"]
+
+process_mode = 1
+wait_time = 0.9
+one_shot = false
+autostart = false
+
+[node name="obj3" type="Timer" parent="." index="10"]
+
+process_mode = 1
+wait_time = 0.9
+one_shot = false
+autostart = false
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." index="11"]
+
+stream = ExtResource( 8 )
+volume_db = 0.0
+pitch_scale = 1.0
+autoplay = true
+mix_target = 0
+bus = "Master"
+
+[node name="barbariansleeping" type="Sprite" parent="." index="12"]
+
+position = Vector2( 401.024, 396.628 )
+texture = ExtResource( 9 )
+
+[node name="flasksmall" type="Sprite" parent="." index="13"]
+
+position = Vector2( 469.104, 420.388 )
+texture = ExtResource( 10 )
+
+[node name="pursesmall" type="Sprite" parent="." index="14"]
+
+position = Vector2( 482.109, 405.103 )
+texture = ExtResource( 11 )
+
+[connection signal="timeout" from="title" to="." method="_on_title_timeout"]
+
+[connection signal="timeout" from="obj1" to="." method="_on_obj1_timeout"]
+
+[connection signal="timeout" from="obj2" to="." method="_on_obj2_timeout"]
+
+[connection signal="timeout" from="obj3" to="." method="_on_obj3_timeout"]
+
+
