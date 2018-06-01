@@ -7,7 +7,7 @@ For more up to date information please visit:
 
 https://squaredwave.com/wiki/index.php?title=Nablin_Loot
 
-## Update: March 5th 2018
+## Update: June 1st 2018
 I have completed changed codebases from Pygame to Godot. 
 
 ## Update: March 5th 2018
